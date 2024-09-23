@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { Picker } from '@react-native-picker/picker'; // Import the Picker
+import { Picker } from '@react-native-picker/picker'; 
 
 const CartScreen = () => {
   const [quantities, setQuantities] = useState({
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     paddingTop: 85,
   },
   scrollViewContent: {
-    paddingBottom: 120, // Enough padding to prevent content from getting hidden behind nav bar
+    paddingBottom: 120, 
   },
   nurseryName: {
     fontSize: 24,

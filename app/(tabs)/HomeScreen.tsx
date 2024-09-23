@@ -56,8 +56,8 @@ const HomeScreen = () => {
         data={nurseries}
         renderItem={renderNursery}
         keyExtractor={(item) => item.id}
-        numColumns={2}  // Set number of columns for 2-column layout
-        columnWrapperStyle={styles.columnWrapper} // Style for nursery columns
+        numColumns={2}  
+        columnWrapperStyle={styles.columnWrapper}  
         contentContainerStyle={styles.nurseryList}
       />
 

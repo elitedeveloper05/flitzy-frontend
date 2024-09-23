@@ -18,7 +18,7 @@ const GetStarted: React.FC<Props> = ({ navigation }) => {
 
         <TouchableOpacity 
           style={styles.button} 
-          onPress={() => navigation.navigate('SignUp')} // Navigating to the SignUp screen
+          onPress={() => navigation.navigate('SignUp')} 
         >
           <Text style={styles.buttonText}>Get Started</Text>
         </TouchableOpacity>

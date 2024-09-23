@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#f0f4c3', // Light green background
+    backgroundColor: '#f0f4c3', 
   },
   title: {
     fontSize: 24,
@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
   },
   vectorPlaceholder: {
     width: '100%',
-    height: Dimensions.get('window').height * 0.3, // 30% of the screen height
-    backgroundColor: '#fff', // White background for better visibility
+    height: Dimensions.get('window').height * 0.3, 
+    backgroundColor: '#fff', 
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,

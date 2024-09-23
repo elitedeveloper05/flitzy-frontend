@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-nati
 
 const LocationRequestScreen = () => {
   const handleAllowLocation = () => {
-    // Logic for allowing location access
     console.log('Allowing location access');
   };
 
@@ -39,7 +38,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#f0f4c3', // Light green background
+    backgroundColor: '#f0f4c3', 
   },
   title: {
     fontSize: 24,
@@ -56,8 +55,8 @@ const styles = StyleSheet.create({
   },
   mapPlaceholder: {
     width: '100%',
-    height: Dimensions.get('window').height * 0.4, // 40% of the screen height
-    backgroundColor: '#ccc', // Grey placeholder for the map
+    height: Dimensions.get('window').height * 0.4, 
+    backgroundColor: '#ccc',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,

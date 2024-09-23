@@ -109,7 +109,6 @@ const ServicesCatalogScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  // Keep the existing styles
   container: {
     flex: 1,
     backgroundColor: '#f0f4c3',

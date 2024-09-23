@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e8f5e9', // Soft green background for gardening theme
+    backgroundColor: '#e8f5e9', 
     padding: 20,
   },
   title: {
