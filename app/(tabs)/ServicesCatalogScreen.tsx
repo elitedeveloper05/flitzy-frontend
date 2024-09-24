@@ -42,73 +42,72 @@ const ServicesCatalogScreen = () => {
   };
 
   const renderQuestions = () => {
-    if (selectedService?.name === 'Repotting Service') {
-      return (
-        <View>
-          <Text style={styles.question}>How many plants to be installed?</Text>
-          <Picker
-            selectedValue={plantCount}
-            onValueChange={(value) => setPlantCount(value)}
-            style={styles.picker}
-          >
-            <Picker.Item label="1" value="1" />
-            <Picker.Item label="2" value="2" />
-            <Picker.Item label="3" value="3" />
-            <Picker.Item label="4" value="4" />
-          </Picker>
-
-          <Text style={styles.question}>Preferred pot size:</Text>
-          <Picker
-            selectedValue={potSize}
-            onValueChange={(value) => setPotSize(value)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Small" value="small" />
-            <Picker.Item label="Medium" value="medium" />
-            <Picker.Item label="Large" value="large" />
-          </Picker>
-        </View>
-      );
-    } else if (selectedService?.name === 'General Maintenance') {
-      return (
-        <View>
-          <Text style={styles.question}>Upload a picture of your garden:</Text>
-          <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
-            <Text style={styles.uploadButtonText}>Upload Image</Text>
-          </TouchableOpacity>
-          {gardenImage && <Image source={{ uri: gardenImage }} style={styles.uploadedImage} />}
-        </View>
-      );
-    } else if (selectedService?.name === 'Lawn Mowing') {
-      return (
-        <View>
-          <Text style={styles.question}>Lawn size (sq ft):</Text>
-          <Picker
-            selectedValue={plantCount}
-            onValueChange={(value) => setPlantCount(value)}
-            style={styles.picker}
-          >
-            <Picker.Item label="500" value="500" />
-            <Picker.Item label="1000" value="1000" />
-            <Picker.Item label="1500" value="1500" />
-            <Picker.Item label="2000" value="2000" />
-          </Picker>
-
-          <Text style={styles.question}>Mowing frequency:</Text>
-          <Picker
-            selectedValue={subscription}
-            onValueChange={(value) => setSubscription(value)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Weekly" value="weekly" />
-            <Picker.Item label="Bi-Weekly" value="biweekly" />
-            <Picker.Item label="Monthly" value="monthly" />
-          </Picker>
-        </View>
-      );
-    }
-    return <Text>No specific questions for this service.</Text>;
+    return (
+      <View>
+        {selectedService?.name === 'Repotting Service' && (
+          <>
+            <Text style={styles.question}>How many plants to be installed?</Text>
+            <Picker
+              selectedValue={plantCount}
+              onValueChange={(value) => setPlantCount(value)}
+              style={styles.picker}
+            >
+              <Picker.Item label="1" value="1" />
+              <Picker.Item label="2" value="2" />
+              <Picker.Item label="3" value="3" />
+              <Picker.Item label="4" value="4" />
+            </Picker>
+  
+            <Text style={styles.question}>Preferred pot size:</Text>
+            <Picker
+              selectedValue={potSize}
+              onValueChange={(value) => setPotSize(value)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Small" value="small" />
+              <Picker.Item label="Medium" value="medium" />
+              <Picker.Item label="Large" value="large" />
+            </Picker>
+          </>
+        )}
+  
+        {selectedService?.name === 'Lawn Mowing' && (
+          <>
+            <Text style={styles.question}>Lawn size (sq ft):</Text>
+            <Picker
+              selectedValue={plantCount}
+              onValueChange={(value) => setPlantCount(value)}
+              style={styles.picker}
+            >
+              <Picker.Item label="500" value="500" />
+              <Picker.Item label="1000" value="1000" />
+              <Picker.Item label="1500" value="1500" />
+              <Picker.Item label="2000" value="2000" />
+            </Picker>
+  
+            <Text style={styles.question}>Mowing frequency:</Text>
+            <Picker
+              selectedValue={subscription}
+              onValueChange={(value) => setSubscription(value)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Weekly" value="weekly" />
+              <Picker.Item label="Bi-Weekly" value="biweekly" />
+              <Picker.Item label="Monthly" value="monthly" />
+            </Picker>
+          </>
+        )}
+  
+        {/* Image upload will be available for all services */}
+        <Text style={styles.question}>Upload a picture of your garden:</Text>
+        <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
+          <Text style={styles.uploadButtonText}>Upload Image</Text>
+        </TouchableOpacity>
+        {gardenImage && <Image source={{ uri: gardenImage }} style={styles.uploadedImage} />}
+      </View>
+    );
   };
+  
 
   const renderSubscriptionAndSlot = () => (
     <View>
@@ -130,9 +129,13 @@ const ServicesCatalogScreen = () => {
         onValueChange={(value) => setTimeSlot(value)}
         style={styles.picker}
       >
-        <Picker.Item label="Morning" value="morning" />
-        <Picker.Item label="Afternoon" value="afternoon" />
-        <Picker.Item label="Evening" value="evening" />
+        <Picker.Item value="Morning" label="8:00AM-9:00AM" />
+        <Picker.Item value="Morning" label="9:00AM-10:00AM" />
+        <Picker.Item value="Morning" label="10:00AM-11:00AM" />
+        <Picker.Item value="Morning" label="11:00AM-12:00PM" />
+        <Picker.Item value="Morning" label="3:00PM-4:00PM" />
+        <Picker.Item value="Morning" label="4:00PM-5:00PM" />
+        <Picker.Item value="Morning" label="5:00PM-6:00PM" />
       </Picker>
     </View>
   );
