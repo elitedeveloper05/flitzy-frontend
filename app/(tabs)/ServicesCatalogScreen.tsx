@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Modal } from 'react-native';
-import { Picker } from '@react-native-picker/picker'; // Updated import
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Modal, Button } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+
 
 const ServicesCatalogScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [plantCount, setPlantCount] = useState('1');
   const [potSize, setPotSize] = useState('small');
+  const [subscription, setSubscription] = useState('weekly');
+  const [timeSlot, setTimeSlot] = useState('morning');
+  const [gardenImage, setGardenImage] = useState(null);
 
   const services = [
     { id: '1', name: 'Lawn Mowing', description: 'Keep your lawn neat and tidy', price: '$20', image: null },
     { id: '2', name: 'Repotting Service', description: 'Repot your plants with care', price: '$30', image: null },
     { id: '3', name: 'Plant Watering', description: 'Daily plant watering service', price: '$15', image: null },
+    { id: '4', name: 'General Maintenance', description: 'General garden maintenance', price: '$50', image: null },
   ];
 
   const openModal = (service) => {
@@ -19,21 +24,22 @@ const ServicesCatalogScreen = () => {
     setModalVisible(true);
   };
 
-  const renderService = ({ item }) => (
-    <View style={styles.serviceCard}>
-      <View style={styles.serviceImagePlaceholder}>
-        <Text style={styles.serviceImageText}>Image Placeholder</Text>
-      </View>
-      <View style={styles.serviceDetails}>
-        <Text style={styles.serviceName}>{item.name}</Text>
-        <Text style={styles.serviceDescription}>{item.description}</Text>
-        <Text style={styles.servicePrice}>{item.price}</Text>
-        <TouchableOpacity style={styles.bookNowButton} onPress={() => openModal(item)}>
-          <Text style={styles.bookNowText}>Book Now</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+  const pickImage = async () => {
+    let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("Permission to access gallery is required!");
+      return;
+    }
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.canceled) {
+      setGardenImage(result.uri);
+    }
+  };
 
   const renderQuestions = () => {
     if (selectedService?.name === 'Repotting Service') {
@@ -63,15 +69,90 @@ const ServicesCatalogScreen = () => {
           </Picker>
         </View>
       );
+    } else if (selectedService?.name === 'General Maintenance') {
+      return (
+        <View>
+          <Text style={styles.question}>Upload a picture of your garden:</Text>
+          <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
+            <Text style={styles.uploadButtonText}>Upload Image</Text>
+          </TouchableOpacity>
+          {gardenImage && <Image source={{ uri: gardenImage }} style={styles.uploadedImage} />}
+        </View>
+      );
+    } else if (selectedService?.name === 'Lawn Mowing') {
+      return (
+        <View>
+          <Text style={styles.question}>Lawn size (sq ft):</Text>
+          <Picker
+            selectedValue={plantCount}
+            onValueChange={(value) => setPlantCount(value)}
+            style={styles.picker}
+          >
+            <Picker.Item label="500" value="500" />
+            <Picker.Item label="1000" value="1000" />
+            <Picker.Item label="1500" value="1500" />
+            <Picker.Item label="2000" value="2000" />
+          </Picker>
+
+          <Text style={styles.question}>Mowing frequency:</Text>
+          <Picker
+            selectedValue={subscription}
+            onValueChange={(value) => setSubscription(value)}
+            style={styles.picker}
+          >
+            <Picker.Item label="Weekly" value="weekly" />
+            <Picker.Item label="Bi-Weekly" value="biweekly" />
+            <Picker.Item label="Monthly" value="monthly" />
+          </Picker>
+        </View>
+      );
     }
     return <Text>No specific questions for this service.</Text>;
   };
+
+  const renderSubscriptionAndSlot = () => (
+    <View>
+      <Text style={styles.question}>Select Subscription Type:</Text>
+      <Picker
+        selectedValue={subscription}
+        onValueChange={(value) => setSubscription(value)}
+        style={styles.picker}
+      >
+        <Picker.Item label="One-time" value="onetime" />
+        <Picker.Item label="Weekly" value="weekly" />
+        <Picker.Item label="Bi-Weekly" value="biweekly" />
+        <Picker.Item label="Monthly" value="monthly" />
+      </Picker>
+
+      <Text style={styles.question}>Select a Time Slot:</Text>
+      <Picker
+        selectedValue={timeSlot}
+        onValueChange={(value) => setTimeSlot(value)}
+        style={styles.picker}
+      >
+        <Picker.Item label="Morning" value="morning" />
+        <Picker.Item label="Afternoon" value="afternoon" />
+        <Picker.Item label="Evening" value="evening" />
+      </Picker>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
       <FlatList
         data={services}
-        renderItem={renderService}
+        renderItem={({ item }) => (
+          <View style={styles.serviceCard}>
+            <View style={styles.serviceDetails}>
+              <Text style={styles.serviceName}>{item.name}</Text>
+              <Text style={styles.serviceDescription}>{item.description}</Text>
+              <Text style={styles.servicePrice}>{item.price}</Text>
+              <TouchableOpacity style={styles.bookNowButton} onPress={() => openModal(item)}>
+                <Text style={styles.bookNowText}>Book Now</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.serviceList}
       />
@@ -82,6 +163,7 @@ const ServicesCatalogScreen = () => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>{selectedService?.name}</Text>
             {renderQuestions()}
+            {renderSubscriptionAndSlot()}
             <TouchableOpacity style={styles.bookNowButton} onPress={() => setModalVisible(false)}>
               <Text style={styles.bookNowText}>Confirm</Text>
             </TouchableOpacity>
@@ -122,18 +204,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     alignItems: 'center',
   },
-  serviceImagePlaceholder: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#ccc',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  serviceImageText: {
-    color: '#777',
-    fontSize: 16,
-  },
   serviceDetails: {
     flex: 1,
   },
@@ -168,25 +238,6 @@ const styles = StyleSheet.create({
   serviceList: {
     paddingBottom: 80,
   },
-  navBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    borderTopWidth: 1,
-    borderColor: '#ccc',
-  },
-  navButton: {
-    alignItems: 'center',
-  },
-  navButtonText: {
-    fontSize: 16,
-    color: '#28a745',
-  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -197,22 +248,55 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 10,
-    width: '80%',
+    width: '90%',
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
-    textAlign: 'center',
   },
   question: {
     fontSize: 16,
     marginBottom: 10,
   },
   picker: {
-    height: 50,
-    width: '100%',
-    marginBottom: 15,
+    marginBottom: 20,
+    backgroundColor: '#f0f0f0',
+  },
+  uploadButton: {
+    backgroundColor: '#007bff',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+    alignSelf: 'flex-start',
+    marginBottom: 10,
+  },
+  uploadButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  uploadedImage: {
+    width: 100,
+    height: 100,
+    marginBottom: 10,
+  },
+  navBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
+    backgroundColor: '#fff',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  navButton: {
+    alignItems: 'center',
+  },
+  navButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
   },
 });
 

@@ -54,7 +54,7 @@ const CartScreen = () => {
         </View>
 
         {/* Service-related questions */}
-        <Text style={styles.sectionTitle}>Service Details</Text>
+        {/* <Text style={styles.sectionTitle}>Service Details</Text>
         <Text style={styles.question}>How many plants to be installed?</Text>
         <Picker
           selectedValue={plantCount}
@@ -76,7 +76,7 @@ const CartScreen = () => {
           <Picker.Item label="Small" value="small" />
           <Picker.Item label="Medium" value="medium" />
           <Picker.Item label="Large" value="large" />
-        </Picker>
+        </Picker> */}
 
         {/* Add-ons */}
         <Text style={styles.sectionTitle}>Enhance your Service</Text>
