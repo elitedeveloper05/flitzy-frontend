@@ -79,23 +79,10 @@ const CartScreen = () => {
         </Picker> */}
 
         {/* Add-ons */}
-        <Text style={styles.sectionTitle}>Enhance your Service</Text>
-        {renderAddOn('Plants', '$5 each')}
+        <Text style={styles.sectionTitle}>Enhance your Service with our Add-Ons</Text>
         {renderAddOn('Pots', '$3 each')}
         {renderAddOn('Soil', '$2 per bag')}
 
-        {/* Subscription selection */}
-        <Text style={styles.sectionTitle}>Service Frequency</Text>
-        <Picker
-          selectedValue={serviceType}
-          onValueChange={(value) => setServiceType(value)}
-          style={styles.picker}
-        >
-          <Picker.Item label="One-time Service" value="one-time" />
-          <Picker.Item label="Weekly" value="weekly" />
-          <Picker.Item label="Bi-weekly" value="bi-weekly" />
-          <Picker.Item label="Monthly" value="monthly" />
-        </Picker>
 
         {/* Price calculator */}
         <View style={styles.priceCalculator}>

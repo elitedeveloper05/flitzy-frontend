@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Modal, Button } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList, Modal, Image } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 
 
@@ -10,104 +11,31 @@ const ServicesCatalogScreen = () => {
   const [potSize, setPotSize] = useState('small');
   const [subscription, setSubscription] = useState('weekly');
   const [timeSlot, setTimeSlot] = useState('morning');
-  const [gardenImage, setGardenImage] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [serviceDate, setServiceDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const services = [
-    { id: '1', name: 'Lawn Mowing', description: 'Keep your lawn neat and tidy', price: '$20', image: null },
-    { id: '2', name: 'Repotting Service', description: 'Repot your plants with care', price: '$30', image: null },
-    { id: '3', name: 'Plant Watering', description: 'Daily plant watering service', price: '$15', image: null },
-    { id: '4', name: 'General Maintenance', description: 'General garden maintenance', price: '$50', image: null },
-  ];
+    { id: '1', name: 'Lawn Mowing', description: 'Keep your lawn neat and tidy', price: '$1/sq feet', image: require('../../assets/images/lawnmoving.jpeg')},
+    { id: '2', name: 'Repotting Service', description: 'Repot your plants with care', price: '$2/pot', image: require('../../assets/images/repotting.webp') },
+    { id: '3', name: 'Plant Watering', description: 'Daily plant watering service', price: '$1/plant', image: require('../../assets/images/watering.jpeg') },
+    { id: '4', name: 'General Maintenance', description: 'General garden maintenance', price: '$5/sq feet', image: require('../../assets/images/maintenance.png') },
+  ];    
+
+  const handleSearch = () => {
+    console.log('Searching for:', searchQuery);
+  };
 
   const openModal = (service) => {
     setSelectedService(service);
     setModalVisible(true);
   };
 
-  const pickImage = async () => {
-    let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (permissionResult.granted === false) {
-      alert("Permission to access gallery is required!");
-      return;
-    }
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    if (!result.canceled) {
-      setGardenImage(result.uri);
-    }
+  const onDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || serviceDate;
+    setShowDatePicker(false);
+    setServiceDate(currentDate);
   };
-
-  const renderQuestions = () => {
-    return (
-      <View>
-        {selectedService?.name === 'Repotting Service' && (
-          <>
-            <Text style={styles.question}>How many plants to be installed?</Text>
-            <Picker
-              selectedValue={plantCount}
-              onValueChange={(value) => setPlantCount(value)}
-              style={styles.picker}
-            >
-              <Picker.Item label="1" value="1" />
-              <Picker.Item label="2" value="2" />
-              <Picker.Item label="3" value="3" />
-              <Picker.Item label="4" value="4" />
-            </Picker>
-  
-            <Text style={styles.question}>Preferred pot size:</Text>
-            <Picker
-              selectedValue={potSize}
-              onValueChange={(value) => setPotSize(value)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Small" value="small" />
-              <Picker.Item label="Medium" value="medium" />
-              <Picker.Item label="Large" value="large" />
-            </Picker>
-          </>
-        )}
-  
-        {selectedService?.name === 'Lawn Mowing' && (
-          <>
-            <Text style={styles.question}>Lawn size (sq ft):</Text>
-            <Picker
-              selectedValue={plantCount}
-              onValueChange={(value) => setPlantCount(value)}
-              style={styles.picker}
-            >
-              <Picker.Item label="500" value="500" />
-              <Picker.Item label="1000" value="1000" />
-              <Picker.Item label="1500" value="1500" />
-              <Picker.Item label="2000" value="2000" />
-            </Picker>
-  
-            <Text style={styles.question}>Mowing frequency:</Text>
-            <Picker
-              selectedValue={subscription}
-              onValueChange={(value) => setSubscription(value)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Weekly" value="weekly" />
-              <Picker.Item label="Bi-Weekly" value="biweekly" />
-              <Picker.Item label="Monthly" value="monthly" />
-            </Picker>
-          </>
-        )}
-  
-        {/* Image upload will be available for all services */}
-        <Text style={styles.question}>Upload a picture of your garden:</Text>
-        <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
-          <Text style={styles.uploadButtonText}>Upload Image</Text>
-        </TouchableOpacity>
-        {gardenImage && <Image source={{ uri: gardenImage }} style={styles.uploadedImage} />}
-      </View>
-    );
-  };
-  
 
   const renderSubscriptionAndSlot = () => (
     <View>
@@ -133,19 +61,46 @@ const ServicesCatalogScreen = () => {
         <Picker.Item value="Morning" label="9:00AM-10:00AM" />
         <Picker.Item value="Morning" label="10:00AM-11:00AM" />
         <Picker.Item value="Morning" label="11:00AM-12:00PM" />
-        <Picker.Item value="Morning" label="3:00PM-4:00PM" />
-        <Picker.Item value="Morning" label="4:00PM-5:00PM" />
-        <Picker.Item value="Morning" label="5:00PM-6:00PM" />
+        <Picker.Item value="Afternoon" label="3:00PM-4:00PM" />
+        <Picker.Item value="Afternoon" label="4:00PM-5:00PM" />
+        <Picker.Item value="Evening" label="5:00PM-6:00PM" />
       </Picker>
     </View>
   );
 
   return (
     <View style={styles.container}>
+      <View style={styles.topBar}>
+        {/* Address and Profile */}
+        <Text style={styles.address}>1234 Garden Street, Green City</Text>
+        <View style={styles.profilePicPlaceholder}>
+          <Text style={styles.profilePicText}>P</Text>
+        </View>
+      </View>
+
+      <Text style={styles.NurseryName}>Blossoms Nursery</Text>
+
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search services"
+        placeholderTextColor="#999"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        onSubmitEditing={handleSearch}
+      />
+
       <FlatList
         data={services}
         renderItem={({ item }) => (
           <View style={styles.serviceCard}>
+            {/* Display the service image */}
+            {item.image && (
+              <Image
+                source={item.image}
+                style={styles.serviceImage}
+                resizeMode="cover"
+              />
+            )}
             <View style={styles.serviceDetails}>
               <Text style={styles.serviceName}>{item.name}</Text>
               <Text style={styles.serviceDescription}>{item.description}</Text>
@@ -165,7 +120,6 @@ const ServicesCatalogScreen = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>{selectedService?.name}</Text>
-            {renderQuestions()}
             {renderSubscriptionAndSlot()}
             <TouchableOpacity style={styles.bookNowButton} onPress={() => setModalVisible(false)}>
               <Text style={styles.bookNowText}>Confirm</Text>
@@ -199,13 +153,70 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f4c3',
     padding: 20,
   },
-  serviceCard: {
+  topBar: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  NurseryName: {
+    fontSize: 24,                 
+    fontWeight: 'bold',            
+    textAlign: 'center',           
+    color: '#2e7d32',              // A vibrant green color
+    marginVertical: 10,            // Adds vertical space above and below
+    textTransform: 'uppercase',     // Uppercase letters for emphasis
+    shadowColor: '#000',           // Adds a shadow effect
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,            // Shadow opacity
+    shadowRadius: 2,               // Blur radius of the shadow
+    elevation: 3,                  // Elevation for Android shadow
+  },
+  
+  address: {
+    top: 20,
+    fontSize: 18,
+    color: '#2e7d32',
+  },
+  profilePicPlaceholder: {
+    top: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  profilePicText: {
+    fontSize: 20,
+    color: '#fff',
+  },
+  searchBar: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 20,
+    fontSize: 16,
+    color: '#333',
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  serviceCard: {
+    flexDirection: 'row', // Align image and details horizontally
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 10,
     marginBottom: 15,
     alignItems: 'center',
+  },
+  serviceImage: {
+    width: 100,
+    height: '100%',
+    borderRadius: 10,
+    marginRight: 20, // Space between image and details
   },
   serviceDetails: {
     flex: 1,
@@ -231,7 +242,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,
-    alignSelf: 'flex-start',
+    alignSelf: 'flex-start', 
   },
   bookNowText: {
     color: '#fff',
@@ -249,12 +260,12 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#fff',
-    padding: 20,
     borderRadius: 10,
-    width: '90%',
+    padding: 20,
+    width: '80%',
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 20,
   },
@@ -263,42 +274,25 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   picker: {
-    marginBottom: 20,
-    backgroundColor: '#f0f0f0',
-  },
-  uploadButton: {
-    backgroundColor: '#007bff',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    backgroundColor: '#f5f5f5',
     borderRadius: 5,
-    alignSelf: 'flex-start',
-    marginBottom: 10,
-  },
-  uploadButtonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  uploadedImage: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   navBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 10,
+    alignItems: 'center',
     backgroundColor: '#fff',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
   },
   navButton: {
+    flex: 1,
     alignItems: 'center',
   },
   navButtonText: {
     fontSize: 16,
-    fontWeight: 'bold',
     color: '#333',
   },
 });
