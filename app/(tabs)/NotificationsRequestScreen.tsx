@@ -20,7 +20,7 @@ const NotificationsRequestScreen = () => {
       </Text>
       <View style={styles.vectorPlaceholder}>
         <Image
-          source={require('/home/user/Desktop/flitzy-siddu-dev/flitzy-siddu-dev/flitzy-siddu/assets/images/notifiationvector.png')}
+          source={require('../../assets/images/notifiationvector.png')}
           style={styles.vectorImage}
           resizeMode="contain"
         />

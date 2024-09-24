@@ -9,7 +9,7 @@ interface Props {
 const GetStarted: React.FC<Props> = ({ navigation }) => {
   return (
     <ImageBackground
-      source={require('/home/user/Desktop/flitzy-siddu-dev/flitzy-siddu-dev/flitzy-siddu/assets/images/bgimage.png')}
+      source={require('../../assets/images/bgimage.png')}
       style={styles.background}
     >
       <View style={styles.container}>
