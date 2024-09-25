@@ -8,11 +8,13 @@ interface Props {
 
 const OTPRequestScreen: React.FC<Props> = ({ navigation }) => {
   const [mobileNumber, setMobileNumber] = useState('');
+  const [otpVisible, setOtpVisible] = useState(false);
+  const [otp, setOtp] = useState('');
 
   const handleGetOTP = () => {
-    // Add your OTP request logic here
     console.log('Requesting OTP for mobile number:', mobileNumber);
-    // Navigate to the next screen (e.g., OTP verification screen) or process the OTP here.
+    // Display the OTP input field
+    setOtpVisible(true);
   };
 
   return (
@@ -27,9 +29,23 @@ const OTPRequestScreen: React.FC<Props> = ({ navigation }) => {
         value={mobileNumber}
         onChangeText={setMobileNumber}
       />
-      <TouchableOpacity style={styles.button} onPress={handleGetOTP}>
-        <Text style={styles.buttonText}>Get OTP</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.getOtpButton} onPress={handleGetOTP}>
+          <Text style={styles.getOtpButtonText}>Get OTP</Text>
+        </TouchableOpacity>
+      </View>
+      
+      {otpVisible && (
+        <TextInput
+          style={styles.input}
+          placeholder="Enter OTP"
+          placeholderTextColor="#999"
+          keyboardType="numeric"
+          maxLength={6}
+          value={otp}
+          onChangeText={setOtp}
+        />
+      )}
     </View>
   );
 };
@@ -39,7 +55,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e8f5e9', 
+    backgroundColor: '#e8f5e9',
     padding: 20,
   },
   title: {
@@ -61,15 +77,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
   },
-  button: {
-    backgroundColor: '#28a745',
-    paddingVertical: 15,
-    paddingHorizontal: 80,
-    borderRadius: 30,
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '100%',
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
+  getOtpButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  getOtpButtonText: {
+    color: '#28a745',
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList, Modal, Image } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
-
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const ServicesCatalogScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -14,6 +14,7 @@ const ServicesCatalogScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [serviceDate, setServiceDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [gardenImage, setGardenImage] = useState(null);
 
   const services = [
     { id: '1', name: 'Lawn Mowing', description: 'Keep your lawn neat and tidy', price: '$1/sq feet', image: require('../../assets/images/lawnmoving.jpeg')},
@@ -35,6 +36,18 @@ const ServicesCatalogScreen = () => {
     const currentDate = selectedDate || serviceDate;
     setShowDatePicker(false);
     setServiceDate(currentDate);
+  };
+
+  const handleImageUpload = () => {
+    launchImageLibrary({ mediaType: 'photo' }, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        setGardenImage(response.assets[0].uri); // Save the image URI
+      }
+    });
   };
 
   const renderSubscriptionAndSlot = () => (
@@ -65,13 +78,31 @@ const ServicesCatalogScreen = () => {
         <Picker.Item value="Afternoon" label="4:00PM-5:00PM" />
         <Picker.Item value="Evening" label="5:00PM-6:00PM" />
       </Picker>
+
+      <Text style={styles.question}>Select Service Date:</Text>
+      <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateButton}>
+        <Text style={styles.dateButtonText}>{serviceDate.toLocaleDateString()}</Text>
+      </TouchableOpacity>
+      {showDatePicker && (
+        <DateTimePicker
+          value={serviceDate}
+          mode="date"
+          display="default"
+          onChange={onDateChange}
+        />
+      )}
+
+      <Text style={styles.question}>Upload Garden Image:</Text>
+      <TouchableOpacity onPress={handleImageUpload} style={styles.uploadButton}>
+        <Text style={styles.uploadButtonText}>Upload Image</Text>
+      </TouchableOpacity>
+      {gardenImage && <Image source={{ uri: gardenImage }} style={styles.uploadedImage} />}
     </View>
   );
 
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
-        {/* Address and Profile */}
         <Text style={styles.address}>1234 Garden Street, Green City</Text>
         <View style={styles.profilePicPlaceholder}>
           <Text style={styles.profilePicText}>P</Text>
@@ -93,7 +124,6 @@ const ServicesCatalogScreen = () => {
         data={services}
         renderItem={({ item }) => (
           <View style={styles.serviceCard}>
-            {/* Display the service image */}
             {item.image && (
               <Image
                 source={item.image}
@@ -115,7 +145,6 @@ const ServicesCatalogScreen = () => {
         contentContainerStyle={styles.serviceList}
       />
 
-      {/* Modal for Service-specific questions */}
       <Modal visible={modalVisible} transparent={true} animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -128,7 +157,6 @@ const ServicesCatalogScreen = () => {
         </View>
       </Modal>
 
-      {/* Bottom Navigation */}
       <View style={styles.navBar}>
         <TouchableOpacity style={styles.navButton}>
           <Text style={styles.navButtonText}>Home</Text>
@@ -163,17 +191,17 @@ const styles = StyleSheet.create({
     fontSize: 24,                 
     fontWeight: 'bold',            
     textAlign: 'center',           
-    color: '#2e7d32',              // A vibrant green color
-    marginVertical: 10,            // Adds vertical space above and below
-    textTransform: 'uppercase',     // Uppercase letters for emphasis
-    shadowColor: '#000',           // Adds a shadow effect
+    color: '#2e7d32',              
+    marginVertical: 10,            
+    textTransform: 'uppercase',     
+    shadowColor: '#000',           
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.3,            // Shadow opacity
-    shadowRadius: 2,               // Blur radius of the shadow
-    elevation: 3,                  // Elevation for Android shadow
+    shadowOpacity: 0.3,            
+    shadowRadius: 2,               
+    elevation: 3,                  
   },
   
   address: {
@@ -205,7 +233,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
   serviceCard: {
-    flexDirection: 'row', // Align image and details horizontally
+    flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 10,
@@ -216,7 +244,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: '100%',
     borderRadius: 10,
-    marginRight: 20, // Space between image and details
+    marginRight: 20,
   },
   serviceDetails: {
     flex: 1,
@@ -242,7 +270,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,
-    alignSelf: 'flex-start', 
+    alignSelf: 'flex-start',
   },
   bookNowText: {
     color: '#fff',
@@ -294,6 +322,34 @@ const styles = StyleSheet.create({
   navButtonText: {
     fontSize: 16,
     color: '#333',
+  },
+  dateButton: {
+    backgroundColor: '#f5f5f5',
+    borderRadius: 5,
+    padding: 10,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  dateButtonText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  uploadButton: {
+    backgroundColor: '#28a745',
+    borderRadius: 5,
+    padding: 10,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  uploadButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  uploadedImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    marginTop: 10,
   },
 });
 
